@@ -4,7 +4,7 @@ The goal of this project is to set up a small infrastructure composed of differe
 * Write own Dockerfiles, one per service;
 * Dockerfiles is called in docker-compose.yml by Makefile.
 
-The services are Nginx with TLS, Wordpress + php-fpm, MariaDB. See full rules in subject, Chapter 4.
+The services are Nginx with TLS, Wordpress + php-fpm, MariaDB, adminer. See full rules in subject, Chapter 4.
 
 
 How it works:
