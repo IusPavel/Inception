@@ -1,0 +1,10 @@
+[client-server]
+port = 3306
+#socket = /run/mysqld/mysqld.sock
+
+[mariadbd]
+skip-host-cache
+skip-name-resolve
+!disable_unix_socket
+
+!includedir /etc/mysql/mariadb.conf.d/

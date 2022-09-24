@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+
+  nginx:
+    build: requirements/nginx
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - inception-network
+
+  mariadb:
+    build: requirements/mariadb
+    container_name: mariadb
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MARIADB_DATABASE=db_wordpress
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - inception-network
+
+  wordpress:
+    build: requirements/wordpress
+    container_name: wordpress
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - WORDPRESS_DB_HOST=mariadb:3306
+      - WORDPRESS_DB_USER=$MARIADB_USER
+      - WORDPRESS_DB_PASSWORD=$MARIADB_PASSWORD
+      - WORDPRESS_DB_NAME=db_wordpress
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - inception-network
+
+  adminer:
+    image: adminer:4
+    container_name: adminer
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+    networks:
+      - inception-network
+
+networks:
+  inception-network:
+    driver: bridge
+
+volumes:
+  wordpress:
+    driver_opts:
+      type: none
+      o: bind
+      device: "$PWD/../data/wordpress"
+  dbdata:
+    driver_opts:
+      type: none
+      o: bind
+      device: "$PWD/../data/dbdata"
